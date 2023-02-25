@@ -14,39 +14,48 @@ class App extends Component {
     super(props);
     this.state = {
       employee: initialData,
+      searchEmployee: [],
       showForm: false,
       name: null,
       workTime: null,
       attendance: null,
       date: null,
-      editId: null
+      editId: null,
+      isSearch: false
     }
   }
 
   render() {
     const {
         employee,
+        searchEmployee,
         showForm,
         name,
         workTime,
         attendance,
         date,
-        editId
+        editId,
+        isSearch
     } = this.state;
-    return(
+
+      const displayEmployee = (searchEmployee.length || isSearch) ? searchEmployee : employee;
+
+      return(
         <div>
             {/*显示top bar*/}
             <TopBar
+                onFilter={({ searchEmployee, isSearch }) => this.setState({ searchEmployee, isSearch })}
+                employee={employee}
                 showForm={showForm}
-                    onCustomizeAdd={entity => this.setState({
-                        showForm: !entity.showForm,
-                        editId: null
-                    })}
+                onCustomizeAdd={entity => this.setState({
+                    showForm: !entity.showForm,
+                    editId: null
+                })}
             />
 
             {/*显示员工列表*/}
             <EmployeeList
-                employee={employee}
+                employee={displayEmployee}
                 onCustomizeEdit={entity => {
                     const { showForm, name, workTime, attendance, date, editId } = entity || {};
                     this.setState({ showForm, name, workTime, attendance, date, editId });
