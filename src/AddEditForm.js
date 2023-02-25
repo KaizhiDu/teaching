@@ -9,12 +9,14 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 
 const style = {
+    padding: '20px',
     position: 'absolute',
-    top: '50%',
+    top: '40%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: 'background.paper',
+    bgcolor: 'white',
+    backgroundColor: 'white',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
@@ -40,14 +42,14 @@ class AddEditForm extends Component {
         } = this.props;
         return (
 
-            <Box sx={style}>
+            <Box>
                 <Modal
                     open={true}
                     onClose={() => onCustomizeCancel()}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <div>
+                    <div style={style}>
                         <FormControl fullWidth>
                             <TextField
                                 id="name"
