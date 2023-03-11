@@ -8,7 +8,7 @@ class TopBar extends Component {
     }
 
     render() {
-        const { showForm, onCustomizeAdd, onFilter, employee } = this.props;
+        const { showForm, onCustomizeAdd, onSearchChange, employee } = this.props;
         return (
             <Fragment>
                 <Button
@@ -21,15 +21,7 @@ class TopBar extends Component {
                 <TextField
                     onChange={evt => {
                         const value = evt.target.value;
-                        const searchEmployee = employee.filter(emp => {
-                            const { name } = emp || {};
-                            if (name.includes(value)) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        })
-                        onFilter({ searchEmployee, isSearch: !!value });
+                        onSearchChange(value);
                     }}
                     style={{
                         marginLeft: 500

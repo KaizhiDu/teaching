@@ -1,52 +1,58 @@
 import React, { Component } from "react";
-import initialData from './data';
 import EmployeeList from './EmployeeList';
 import TopBar from "./TopBar";
 import AddEditForm from "./AddEditForm";
-
-const trueFalseOptions = [
-    { id: 'true', value: true },
-    { id: 'false', value: false }
-]
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      employee: initialData,
-      searchEmployee: [],
+      employee: JSON.parse(localStorage.getItem('employee')) || [],
       showForm: false,
       name: null,
       workTime: null,
       attendance: null,
       date: null,
       editId: null,
-      isSearch: false
+      isSearch: false,
+      searchContent: null
     }
   }
 
   render() {
     const {
         employee,
-        searchEmployee,
         showForm,
         name,
         workTime,
         attendance,
         date,
         editId,
-        isSearch
+        searchContent
     } = this.state;
 
-      const displayEmployee = (searchEmployee.length || isSearch) ? searchEmployee : employee;
+      const searchEmployee = employee.filter(emp => {
+          const { name } = emp || {};
+          if (name.includes(searchContent)) {
+              return true;
+          } else {
+              return false;
+          }
+      })
+
+      const displayEmployee = searchContent ? searchEmployee : employee;
 
       return(
         <div>
             {/*显示top bar*/}
             <TopBar
-                onFilter={({ searchEmployee, isSearch }) => this.setState({ searchEmployee, isSearch })}
                 employee={employee}
                 showForm={showForm}
+                onSearchChange={value => {
+                    this.setState({
+                        searchContent: value
+                    })
+                }}
                 onCustomizeAdd={entity => this.setState({
                     showForm: !entity.showForm,
                     editId: null
@@ -65,21 +71,25 @@ class App extends Component {
                     this.setState({
                         employee: afterDeletedEmployee
                     })
+                    localStorage.setItem('employee', JSON.stringify(afterDeletedEmployee));
                 }}
             />
 
             {/*添加/修改 的表单*/}
             { showForm &&
                 <AddEditForm
-                    onAddEdit={(employee => this.setState({
-                        employee,
-                        showForm: false,
-                        name: null,
-                        workTime: null,
-                        attendance: null,
-                        date: null,
-                        editId: null
-                    }))}
+                    onAddEdit={(employee => {
+                        this.setState({
+                            employee,
+                            showForm: false,
+                            name: null,
+                            workTime: null,
+                            attendance: null,
+                            date: null,
+                            editId: null
+                        })
+                        localStorage.setItem('employee', JSON.stringify(employee))
+                    } )}
                     onCustomizeCancel={() => this.setState({ showForm: false })}
                     onCustomizeValueChange={entity => {
                         const { name, value } = entity || {};
